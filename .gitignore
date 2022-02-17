@@ -44,7 +44,7 @@ atlassian-ide-plugin.xml
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
-crashlytics.properties
+crashlytics.properties 
 crashlytics-build.properties
 fabric.properties
 
@@ -56,27 +56,6 @@ target/*
 *bot/rounds/*
 
 src/java/src/target/*
-src/java/src/main/java/za/co/entelect/challenge/Bot.java
-src/java/src/main/java/za/co/entelect/challenge/Main.java
-src/java/src/main/java/za/co/entelect/challenge/command/AccelerateCommand.java
-src/java/src/main/java/za/co/entelect/challenge/command/BoostCommand.java
-src/java/src/main/java/za/co/entelect/challenge/command/ChangeLaneCommand.java
-src/java/src/main/java/za/co/entelect/challenge/command/Command.java
-src/java/src/main/java/za/co/entelect/challenge/command/DecelerateCommand.java
-src/java/src/main/java/za/co/entelect/challenge/command/DoNothingCommand.java
-src/java/src/main/java/za/co/entelect/challenge/command/EmpCommand.java
-src/java/src/main/java/za/co/entelect/challenge/command/FixCommand.java
-src/java/src/main/java/za/co/entelect/challenge/command/LizardCommand.java
-src/java/src/main/java/za/co/entelect/challenge/command/OilCommand.java
-src/java/src/main/java/za/co/entelect/challenge/command/TweetCommand.java
-src/java/src/main/java/za/co/entelect/challenge/entities/Car.java
-src/java/src/main/java/za/co/entelect/challenge/entities/GameState.java
-src/java/src/main/java/za/co/entelect/challenge/entities/Lane.java
-src/java/src/main/java/za/co/entelect/challenge/entities/Position.java
-src/java/src/main/java/za/co/entelect/challenge/enums/Direction.java
-src/java/src/main/java/za/co/entelect/challenge/enums/PowerUps.java
-src/java/src/main/java/za/co/entelect/challenge/enums/State.java
-src/java/src/main/java/za/co/entelect/challenge/enums/Terrain.java
 src/java/target/classes/za/co/entelect/challenge/Bot.class
 src/java/target/classes/za/co/entelect/challenge/Main.class
 src/java/target/classes/za/co/entelect/challenge/command/AccelerateCommand.class
