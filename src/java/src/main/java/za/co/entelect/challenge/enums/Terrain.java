@@ -24,5 +24,7 @@ public enum Terrain {
     @SerializedName("9")
     EMP,
     @SerializedName("10")
-    CYBER_TRUCK
+    TRUCK,
+    @SerializedName("11")
+    PLAYER
 }
