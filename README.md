@@ -15,9 +15,19 @@ Jika sudah kecepatan maksimum maka tidak akan melakukan apa-apa.
 * IntelIiJ IDEA : [Download](https://www.jetbrains.com/idea/)
 * NodeJS: [Download](https://nodejs.org/en/download/)
 
-## Running
-Pada starter-pack, edit file **game-runner-config.json** sehingga **player-a** mengarah pada directori **bot.json**.
-Lalu run file **run.bat** pada windows.
+## Setup
+* Pastikan semua requirement di atas sudah terinstall pada perangkat keras yang akan digunakan.
+* Perhatikan bahwa Game Engine yang diunduh dari link di atas merupakan starter pack yang digunakan oleh pemain untuk memulai membuat bot.
+* Struktur folder starter pack tersebut dapat dilihat di https://github.com/EntelectChallenge/2020-Overdrive.
+* Lakukan pengimplementasian kode program menggunakan Intellij IDEA (dapat dilakukan dengan menjalankan file pom.xml).
+* Setelah diimplementasikan, lakukan instalasi program dengan menggunakan Maven Toolbox pada bagian Lifecycle yang terletak di bagian kanan Intellij IDEA.
+* Instalasi ini menghasilkan sebuah folder bernama target yang akan berisi sebuah file bernama java-sample-bot-jar-with-dependencies.jar.
+* Pindahkan file ini ke dalam folder starter-pack. Jika sudah ada, file yang lama bisa digantikan dengan file yang baru ini.
+* Pastikan konfigurasi program yang ada di game-runner-config.json sudah benar, meliputi direktori bot yang digunakan.
+* Jika menggunakan file yang terdapat dalam repositori ini, maka yang perlu dilakukan adalah menggantikan file jar dengan file yang ada di folder bin.
+* Selain itu, jangan lupa untuk tetap mengubah source code program dengan mengganti folder starter-bots dengan folder src yang ada di repositori ini.
+* Pada starter-pack, edit file **game-runner-config.json** sehingga **player-a** mengarah pada directory **bot.json**.
+* Lalu run file **run.bat** pada windows.
 
 ## Authors
 >Muhammad Akmal Arifin - 13520037
