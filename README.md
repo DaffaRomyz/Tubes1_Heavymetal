@@ -26,13 +26,19 @@ Jika sudah kecepatan maksimum maka tidak akan melakukan apa-apa.
 * Pastikan konfigurasi program yang ada di game-runner-config.json sudah benar, meliputi direktori bot yang digunakan.
 * Jika menggunakan file yang terdapat dalam repositori ini, maka yang perlu dilakukan adalah menggantikan file jar dengan file yang ada di folder bin.
 * Selain itu, jangan lupa untuk tetap mengubah source code program dengan mengganti folder starter-bots dengan folder src yang ada di repositori ini.
-* Pada starter-pack, edit file **game-runner-config.json** sehingga **player-a** mengarah pada directory **bot.json**.
-* Lalu run file **run.bat** pada windows.
+* Pada starter-pack, edit file `game-runner-config.json` sehingga `player-a` mengarah pada directory `bot.json`.
+* Lalu run file `run.bat` pada windows.
 
 ## Authors
->Muhammad Akmal Arifin - 13520037
+| Nama | NIM | Email |
+| ----- | --- | ----------|
+|Muhammad Akmal Arifin | 13520037 | <13520037@std.stei.itb.ac.id> |
+|Azmi Alfatih Shalahuddin | 13520158 | <13520158@std.stei.itb.ac.id> |
+|Daffa Romyz Aufa | 13520162 | <13520162@std.stei.itb.ac.id> |
 
->Azmi Alfatih Shalahuddin - 13520158
+## Referensi
+Munir, R., 2022. Algoritma Greedy (Bagian 1). [online] Informatika.stei.itb.ac.id. Available at: <https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2020-2021/Algoritma-Greedy-(2021)-Bag1.pdf> [Accessed 18 February 2022].
+Munir, R., 2022. Algoritma Greedy (Bagian 2). [online] Informatika.stei.itb.ac.id. Available at: <https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2020-2021/Algoritma-Greedy-(2021)-Bag2.pdf> [Accessed 18 February 2022].
+Munir, R., 2022. Algoritma Greedy (Bagian 3). [online] Informatika.stei.itb.ac.id. Available at: <https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2021-2022/Algoritma-Greedy-(2022)-Bag3.pdf> [Accessed 18 February 2022].
 
->Daffa Romyz Aufa - 13520162
 
