@@ -9,10 +9,14 @@ import java.util.*;
 
 import static java.lang.Math.max;
 
-//import java.security.SecureRandom;
-
 public class Bot {
-    // private final Random random;
+    private final static int MINIMUM_SPEED = 0;
+    private final static int SPEED_STATE_1 = 3;
+    private final static int INITIAL_SPEED = 5;
+    private final static int SPEED_STATE_2 = 6;
+    private final static int SPEED_STATE_3 = 8;
+    private final static int MAXIMUM_SPEED = 9;
+    private final static int BOOST_SPEED = 15;
 
     private final static Command ACCELERATE = new AccelerateCommand();
     private final static Command BOOST = new BoostCommand();
@@ -20,12 +24,12 @@ public class Bot {
     private final static Command FIX = new FixCommand();
     private final static Command LIZARD = new LizardCommand();
     private final static Command OIL = new OilCommand();
+    private final static Command DO_NOTHING = new DoNothingCommand();
 
     private final static Command TURN_RIGHT = new ChangeLaneCommand(1);
     private final static Command TURN_LEFT = new ChangeLaneCommand(-1);
 
     public Bot() {
-        // this.random = new SecureRandom();
     }
 
     public Command run(GameState gameState) {
@@ -35,55 +39,73 @@ public class Bot {
         List<Object> blocksInFront = getBlocksInFront(myCar.position.lane, myCar.position.block, myCar.speed,
                 gameState);
 
+        /* Greedy untuk Fix */
         if (isMaxSpeed(myCar.damage, myCar.speed) && myCar.damage > 2)
             return FIX;
 
         /* Greedy untuk Avoid Obstacles */
         if (blocksInFront.contains(Terrain.WALL) || blocksInFront.contains(Terrain.TRUCK)) {
+
+            /* Semakin kecil semakin prioritas untuk dilewati */
             int left = 9999;
             int right = 9999;
+
+            /* Cek obstacles yang ada pada map, dan mencari nilai prioritasnya */
             if (myCar.position.lane > 1)
                 left = obstaclesCheckLeft(myCar.position.lane, myCar.position.block, myCar.speed, gameState);
             if (myCar.position.lane < 4)
                 right = obstaclesCheckRight(myCar.position.lane, myCar.position.block, myCar.speed, gameState);
 
+            /* Fungsi seleksi */
             if (left > 1 && right > 1 && hasPowerUp(PowerUps.LIZARD, myCar.powerups))
                 return LIZARD;
-
             if (left <= right)
                 return TURN_LEFT;
             else
                 return TURN_RIGHT;
         }
 
-        /* Greedy untuk Fix Command */
+        /* Greedy untuk Fix Command untuk menggunakan Boost */
         if ((myCar.damage == 1 || myCar.damage == 2) && hasPowerUp(PowerUps.BOOST, myCar.powerups))
             return FIX;
 
         if (blocksInFront.contains(Terrain.MUD) || blocksInFront.contains(Terrain.OIL_SPILL)) {
+
+            /* Semakin kecil semakin prioritas untuk dilewati */
             int left = 9999;
             int right = 9999;
+
+            /* Cek obstacles yang ada pada map, dan mencari nilai prioritasnya */
             if (myCar.position.lane > 1)
                 left = obstaclesCheckLeft(myCar.position.lane, myCar.position.block, myCar.speed, gameState);
             if (myCar.position.lane < 4)
                 right = obstaclesCheckRight(myCar.position.lane, myCar.position.block, myCar.speed, gameState);
+            int front = obstaclesCheckFront(myCar.position.lane, myCar.position.block, myCar.speed, gameState);
 
-            if (left > 1 && right > 1 && hasPowerUp(PowerUps.LIZARD, myCar.powerups))
+            /* Fungsi seleksi */
+            if (left > 1 && right > 1 && front > 1 && hasPowerUp(PowerUps.LIZARD, myCar.powerups))
                 return LIZARD;
-            if (left == 0)
+            if (left <= right && left <= front)
                 return TURN_LEFT;
-            else if (right == 0)
+            if (right <= left && right <= front)
                 return TURN_RIGHT;
         }
 
-        /* Greedy untuk powerups */
+        /* Greedy untuk menggunakan Boost */
         if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
-            return BOOST;
+
+            /*
+             * Hanya akan menggunakan Boost apabila tidak akan terkena obstacles saat
+             * menggunakan Boost
+             */
+            int front = obstaclesCheckFront(myCar.position.lane, myCar.position.block, BOOST_SPEED, gameState);
+            if (front == 0)
+                return BOOST;
         }
 
+        /* Greedy untuk menggunakan EMP */
         if (hasPowerUp(PowerUps.EMP, myCar.powerups) && myCar.position.block < opponent.position.block
-                && (myCar.position.lane + 2 == opponent.position.lane
-                        || myCar.position.lane - 2 == opponent.position.lane))
+                && myCar.position.lane + 2 > opponent.position.lane && myCar.position.lane - 2 < opponent.position.lane)
             return EMP;
 
         if (hasPowerUp(PowerUps.TWEET, myCar.powerups) && myCar.position.block > opponent.position.block) {
@@ -108,6 +130,8 @@ public class Bot {
             else
                 opponentLane = opponent.position.lane;
 
+            left = 9999;
+            right = 9999;
             if (opponentLane > 1)
                 left = obstaclesCheckLeft(opponentLane, opponent.position.block + opponent.speed,
                         opponent.speed, gameState);
@@ -117,13 +141,12 @@ public class Bot {
             front = obstaclesCheckFront(opponentLane, opponent.position.block + opponent.speed,
                     opponent.speed, gameState);
 
-            if (left > 0 && right > 0 && front == 0)
-                return new TweetCommand(opponent.position.lane, opponent.position.block + opponent.speed + 1);
             if (left == 0 && right > 0 && front > 0)
-                return new TweetCommand(opponent.position.lane - 1, opponent.position.block + opponent.speed + 1);
+                return new TweetCommand(opponentLane - 1, opponent.position.block + opponent.speed + 1);
             if (left > 0 && right == 0 && front > 0)
-                return new TweetCommand(opponent.position.lane + 1, opponent.position.block + opponent.speed + 1);
-
+                return new TweetCommand(opponentLane + 1, opponent.position.block + opponent.speed + 1);
+            if (front == 0)
+                return new TweetCommand(opponentLane, opponent.position.block + opponent.speed + 1);
             /*
              * front = obstaclesCheckFront(myCar.position.lane, myCar.position.block,
              * myCar.speed, gameState);
@@ -153,7 +176,11 @@ public class Bot {
                 return OIL;
         }
 
-        return ACCELERATE;
+        int nextMyCarSpeed = nextSpeed(myCar.damage, myCar.speed);
+        int front = obstaclesCheckFront(myCar.position.lane, myCar.position.block, nextMyCarSpeed, gameState);
+        if (front == 0)
+            return ACCELERATE;
+        return DO_NOTHING;
     }
 
     /*
@@ -161,20 +188,53 @@ public class Bot {
      * dimilikinya
      */
     private Boolean isMaxSpeed(int damage, int speed) {
-        if (damage == 5 && speed == 0)
+        if (damage >= 5 && speed == MINIMUM_SPEED)
             return true;
-        else if (damage == 4 && speed == 3)
+        else if (damage == 4 && speed == SPEED_STATE_1)
             return true;
-        else if (damage == 3 && speed == 6)
+        else if (damage == 3 && speed == SPEED_STATE_2)
             return true;
-        else if (damage == 2 && speed == 8)
+        else if (damage == 2 && speed == SPEED_STATE_3)
             return true;
         else
-            return damage <= 1 && speed == 9;
+            return damage <= 1 && speed == MAXIMUM_SPEED;
+    }
+
+    private int nextSpeed(int damage, int speed) {
+        int next;
+        switch (speed) {
+            case MINIMUM_SPEED:
+                next = SPEED_STATE_1;
+                break;
+            case SPEED_STATE_1:
+            case INITIAL_SPEED:
+                next = SPEED_STATE_2;
+                break;
+            case SPEED_STATE_2:
+                next = SPEED_STATE_3;
+                break;
+            default:
+                next = MAXIMUM_SPEED;
+        }
+
+        if (damage >= 5)
+            next = 0;
+        else if (damage == 4 && next > 3)
+            next = 3;
+        else if (damage == 3 && next > 6)
+            next = 6;
+        else if (damage == 2 && next > 8)
+            next = 8;
+        else if (damage == 1)
+            next = 9;
+
+        return next;
     }
 
     /* Fungsi untuk mengecek lane ketika ingin belok */
     private int obstaclesCheckLeft(int lane, int block, int speed, GameState gameState) {
+        if (lane == 1)
+            return 9999;
         List<Object> blocksInLeftLane = getBlocksInLeft(lane, block, speed, gameState);
         int sum = 0;
         for (Object contain : blocksInLeftLane) {
@@ -190,6 +250,8 @@ public class Bot {
     }
 
     private int obstaclesCheckRight(int lane, int block, int speed, GameState gameState) {
+        if (lane == 4)
+            return 9999;
         List<Object> blocksInRightLane = getBlocksInRight(lane, block, speed, gameState);
         int sum = 0;
         for (Object contain : blocksInRightLane) {
@@ -220,8 +282,8 @@ public class Bot {
     }
 
     /* Fungsi untuk mengecek apakah memiliki power up tertentu */
-    private Boolean hasPowerUp(PowerUps powerUpCheck, PowerUps[] store) {
-        for (PowerUps powerUp : store) {
+    private Boolean hasPowerUp(PowerUps powerUpCheck, PowerUps[] powerups) {
+        for (PowerUps powerUp : powerups) {
             if (powerUp.equals(powerUpCheck))
                 return true;
         }
