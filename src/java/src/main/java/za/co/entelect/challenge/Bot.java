@@ -39,12 +39,24 @@ public class Bot {
         List<Object> blocksInFront = getBlocksInFront(myCar.position.lane, myCar.position.block, myCar.speed,
                 gameState);
 
-        /* Greedy untuk Fix */
+        /*** Greedy untuk menggunakan Fix ***/
+
+        /**
+         * Greedy dilakukan dengan cara memprioritaskan FIX apabila damage yang dimiliki
+         * lebih dari 2
+         */
+
         if (isMaxSpeed(myCar.damage, myCar.speed) && myCar.damage > 2)
             return FIX;
 
-        /* Greedy untuk Avoid Obstacles */
+        /*** Greedy untuk menghindari Obstacles ***/
         if (blocksInFront.contains(Terrain.WALL) || blocksInFront.contains(Terrain.TRUCK)) {
+
+            /**
+             * Greedy dilakukan dengan cara menghitung nilai prioritas pada masing-masing
+             * lane, depan, kiri, maupun kanan. Kemudian memilih lane yang memiliki
+             * obstacles dengan nilai terkecil
+             */
 
             /* Semakin kecil semakin prioritas untuk dilewati */
             int left = 9999;
@@ -65,11 +77,18 @@ public class Bot {
                 return TURN_RIGHT;
         }
 
-        /* Greedy untuk Fix Command untuk menggunakan Boost */
+        /*** Greedy untuk menggunakan Fix apabila memiliki Boost ***/
         if ((myCar.damage == 1 || myCar.damage == 2) && hasPowerUp(PowerUps.BOOST, myCar.powerups))
             return FIX;
 
+        /*** Greedy untuk menghindari Obstacles ***/
         if (blocksInFront.contains(Terrain.MUD) || blocksInFront.contains(Terrain.OIL_SPILL)) {
+
+            /**
+             * Greedy dilakukan dengan cara menghitung nilai prioritas pada masing-masing
+             * lane, depan, kiri, maupun kanan. Kemudian memilih lane yang memiliki
+             * obstacles dengan nilai terkecil
+             */
 
             /* Semakin kecil semakin prioritas untuk dilewati */
             int left = 9999;
@@ -91,24 +110,43 @@ public class Bot {
                 return TURN_RIGHT;
         }
 
-        /* Greedy untuk menggunakan Boost */
+        /*** Greedy untuk menggunakan Boost ***/
         if (myCar.damage == 0 && hasPowerUp(PowerUps.BOOST, myCar.powerups)) {
 
             /*
-             * Hanya akan menggunakan Boost apabila tidak akan terkena obstacles saat
-             * menggunakan Boost
+             * Greedy dilakukan dengan cara memastikan apabila menggunakan Boost tidak
+             * akan menabrak obstacles
              */
+
             int front = obstaclesCheckFront(myCar.position.lane, myCar.position.block, BOOST_SPEED, gameState);
             if (front == 0)
                 return BOOST;
         }
 
-        /* Greedy untuk menggunakan EMP */
+        /*** Greedy untuk menggunakan EMP ***/
+
+        /**
+         * Greedy dilakukan dengan cara memastikan apakah lawan berada di posisi lane
+         * yang akan terkena EMP apabila digunakan
+         */
+
         if (hasPowerUp(PowerUps.EMP, myCar.powerups) && myCar.position.block < opponent.position.block
                 && myCar.position.lane + 2 > opponent.position.lane && myCar.position.lane - 2 < opponent.position.lane)
             return EMP;
 
+        /*** Greedy untuk menggunakan Tweet ***/
         if (hasPowerUp(PowerUps.TWEET, myCar.powerups) && myCar.position.block > opponent.position.block) {
+
+            /**
+             * Greedy dilakukan dengan cara memprediksi gerak lawan kemana dia akan berbelok
+             * dalam dua ronde, kemudian meletakkan apabila kemungkinan lawan berbelok ke
+             * lane tersebut tinggi
+             * 
+             * Prediksi yang digunakan dengan asumsi lawan akan bergerak menuju lane yang
+             * tidak memiliki obstacles atau obstaclesnya paling sedikit
+             */
+
+            /* Prediksi pergerakan lawan pertama */
             int left = 9999;
             int right = 9999;
             int front;
@@ -130,8 +168,10 @@ public class Bot {
             else
                 opponentLane = opponent.position.lane;
 
+            /* Prediksi pergerakan lawan kedua */
             left = 9999;
             right = 9999;
+
             if (opponentLane > 1)
                 left = obstaclesCheckLeft(opponentLane, opponent.position.block + opponent.speed,
                         opponent.speed, gameState);
@@ -141,29 +181,23 @@ public class Bot {
             front = obstaclesCheckFront(opponentLane, opponent.position.block + opponent.speed,
                     opponent.speed, gameState);
 
+            /* Fungsi seleksi */
             if (left == 0 && right > 0 && front > 0)
                 return new TweetCommand(opponentLane - 1, opponent.position.block + opponent.speed + 1);
             if (left > 0 && right == 0 && front > 0)
                 return new TweetCommand(opponentLane + 1, opponent.position.block + opponent.speed + 1);
             if (front == 0)
                 return new TweetCommand(opponentLane, opponent.position.block + opponent.speed + 1);
-            /*
-             * front = obstaclesCheckFront(myCar.position.lane, myCar.position.block,
-             * myCar.speed, gameState);
-             * if (myCar.position.lane > 1)
-             * left = obstaclesCheckLeft(myCar.position.lane, myCar.position.block,
-             * myCar.speed, gameState);
-             * if (myCar.position.lane < 4)
-             * right = obstaclesCheckRight(myCar.position.lane, myCar.position.block,
-             * myCar.speed, gameState);
-             * 
-             * if (left != 0 && right != 0 && front == 0)
-             * return new TweetCommand(myCar.position.lane, myCar.position.block +
-             * myCar.speed - 3);
-             */
         }
 
+        /*** Greedy untuk menggunakan Oil ***/
         if (hasPowerUp(PowerUps.OIL, myCar.powerups) && myCar.position.block > opponent.position.block) {
+
+            /**
+             * Greedy dilakukan dengan cara menggunakan oil jika lane kiri dan lane kanan
+             * pemain terdapat obstacles dan jalan di depan pemain tidak terdapat obstacles
+             */
+
             int left = 9999;
             int right = 9999;
 
@@ -176,6 +210,13 @@ public class Bot {
                 return OIL;
         }
 
+        /*** Greedy untuk menggunakan Accelerate ***/
+
+        /**
+         * Greedy dilakukan dengan cara memastikan apabila menggunakan Accelerate tidak
+         * akan menabrak obstacles
+         */
+
         int nextMyCarSpeed = nextSpeed(myCar.damage, myCar.speed);
         int front = obstaclesCheckFront(myCar.position.lane, myCar.position.block, nextMyCarSpeed, gameState);
         if (front == 0)
@@ -183,10 +224,13 @@ public class Bot {
         return DO_NOTHING;
     }
 
+    /*** Fungsi isMaxSpeed ***/
+
     /*
-     * Menghasilkan true apabila car dalam posisi maxSpeed sesuai dengan damage yang
-     * dimilikinya
+     * Fungsi akan menghasilkan true apabila car dalam posisi maxSpeed sesuai dengan
+     * damage yang dimilikinya
      */
+
     private Boolean isMaxSpeed(int damage, int speed) {
         if (damage >= 5 && speed == MINIMUM_SPEED)
             return true;
@@ -199,6 +243,14 @@ public class Bot {
         else
             return damage <= 1 && speed == MAXIMUM_SPEED;
     }
+
+    /*** Fungsi nextSpeed ***/
+
+    /**
+     * Fungsi akan menghasilkan integer berupa speed kendaraan apabila menggunakan
+     * Accelerate sesuai dengan aturan yang ada, kemudian menyesuaikan dengan damage
+     * yang dimilki
+     */
 
     private int nextSpeed(int damage, int speed) {
         int next;
@@ -231,7 +283,28 @@ public class Bot {
         return next;
     }
 
-    /* Fungsi untuk mengecek lane ketika ingin belok */
+    /*** Fungsi hasPowerUp ***/
+
+    /**
+     * Fungsi ini mengmbalikan true apabila powerUpCheck dimiliki oleh powerups
+     * dari suatu kendaraan
+     */
+
+    private Boolean hasPowerUp(PowerUps powerUpCheck, PowerUps[] powerups) {
+        for (PowerUps powerUp : powerups) {
+            if (powerUp.equals(powerUpCheck))
+                return true;
+        }
+        return false;
+    }
+
+    /*** Fungsi obstaclesCheck ***/
+
+    /**
+     * Fungsi ini menghitung nilai prioritas pada masing-masing lane yaitu kiri,
+     * depan, dan kanan, berdasarkan Obstacles yang terdapat pada masing-masing lane
+     */
+
     private int obstaclesCheckLeft(int lane, int block, int speed, GameState gameState) {
         if (lane == 1)
             return 9999;
@@ -281,20 +354,12 @@ public class Bot {
         return sum;
     }
 
-    /* Fungsi untuk mengecek apakah memiliki power up tertentu */
-    private Boolean hasPowerUp(PowerUps powerUpCheck, PowerUps[] powerups) {
-        for (PowerUps powerUp : powerups) {
-            if (powerUp.equals(powerUpCheck))
-                return true;
-        }
-        return false;
-    }
+    /*** Fungsi getBlocks ***/
 
     /**
-     * Returns map of blocks and the objects in the for the current lanes, returns
-     * the amount of blocks that can be
-     * traversed at max speed.
-     **/
+     * Fungsi ini mengmbalikan List of Terrain yang ada pada lane kiri, depan, dan
+     * kanan sesuai dengan panjang speed dari input
+     */
     public List<Object> getBlocksInFront(int lane, int block, int speed, GameState gameState) {
         List<Lane[]> map = gameState.lanes;
         List<Object> blocks = new ArrayList<>();
