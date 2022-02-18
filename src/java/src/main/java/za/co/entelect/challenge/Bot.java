@@ -135,7 +135,8 @@ public class Bot {
             return EMP;
 
         /*** Greedy untuk menggunakan Tweet ***/
-        if (hasPowerUp(PowerUps.TWEET, myCar.powerups) && myCar.position.block > opponent.position.block) {
+        if (hasPowerUp(PowerUps.TWEET, myCar.powerups) && myCar.position.block > opponent.position.block
+                && opponent.speed < BOOST_SPEED) {
 
             /**
              * Greedy dilakukan dengan cara memprediksi gerak lawan kemana dia akan berbelok
@@ -159,7 +160,7 @@ public class Bot {
 
             int opponentLane;
 
-            if (left > 1 && right > 1 && front > 1 && hasPowerUp(PowerUps.LIZARD, opponent.powerups))
+            if (left > 1 && right > 1 && front > 1)
                 opponentLane = opponent.position.lane;
             else if (left <= right && left <= front)
                 opponentLane = opponent.position.lane - 1;
@@ -306,7 +307,7 @@ public class Bot {
      */
 
     private int obstaclesCheckLeft(int lane, int block, int speed, GameState gameState) {
-        if (lane == 1)
+        if (lane <= 1)
             return 9999;
         List<Object> blocksInLeftLane = getBlocksInLeft(lane, block, speed, gameState);
         int sum = 0;
@@ -323,7 +324,7 @@ public class Bot {
     }
 
     private int obstaclesCheckRight(int lane, int block, int speed, GameState gameState) {
-        if (lane == 4)
+        if (lane >= 4)
             return 9999;
         List<Object> blocksInRightLane = getBlocksInRight(lane, block, speed, gameState);
         int sum = 0;
@@ -360,12 +361,16 @@ public class Bot {
      * Fungsi ini mengmbalikan List of Terrain yang ada pada lane kiri, depan, dan
      * kanan sesuai dengan panjang speed dari input
      */
+
     public List<Object> getBlocksInFront(int lane, int block, int speed, GameState gameState) {
         List<Lane[]> map = gameState.lanes;
         List<Object> blocks = new ArrayList<>();
         int startBlock = map.get(0)[0].position.block;
 
-        Lane[] laneList = map.get(lane - 1);
+        int laneCheck = lane - 1;
+        if (laneCheck < 0)
+            laneCheck = 0;
+        Lane[] laneList = map.get(laneCheck);
         for (int i = max(block - startBlock + 1, 0); i <= block - startBlock + speed; i++) {
             if (laneList[i] == null || laneList[i].terrain == Terrain.FINISH) {
                 break;
@@ -387,7 +392,10 @@ public class Bot {
         List<Object> blocks = new ArrayList<>();
         int startBlock = map.get(0)[0].position.block;
 
-        Lane[] laneList = map.get(lane - 2);
+        int laneCheck = lane - 2;
+        if (laneCheck < 0)
+            laneCheck = 0;
+        Lane[] laneList = map.get(laneCheck);
         for (int i = max(block - startBlock, 0); i <= block - startBlock + speed - 1; i++) {
             if (laneList[i] == null || laneList[i].terrain == Terrain.FINISH) {
                 break;
