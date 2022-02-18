@@ -37,8 +37,8 @@ Jika sudah kecepatan maksimum maka tidak akan melakukan apa-apa.
 |Daffa Romyz Aufa | 13520162 | <13520162@std.stei.itb.ac.id> |
 
 ## Referensi
-Munir, R., 2022. Algoritma Greedy (Bagian 1). [online] Informatika.stei.itb.ac.id. Available at: <https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2020-2021/Algoritma-Greedy-(2021)-Bag1.pdf> [Accessed 18 February 2022].  
-Munir, R., 2022. Algoritma Greedy (Bagian 2). [online] Informatika.stei.itb.ac.id. Available at: <https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2020-2021/Algoritma-Greedy-(2021)-Bag2.pdf> [Accessed 18 February 2022].  
-Munir, R., 2022. Algoritma Greedy (Bagian 3). [online] Informatika.stei.itb.ac.id. Available at: <https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2021-2022/Algoritma-Greedy-(2022)-Bag3.pdf> [Accessed 18 February 2022].  
+  Munir, R., 2022. Algoritma Greedy (Bagian 1). [online] Informatika.stei.itb.ac.id. Available at: <https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2020-2021/Algoritma-Greedy-(2021)-Bag1.pdf> [Accessed 18 February 2022].  
+  Munir, R., 2022. Algoritma Greedy (Bagian 2). [online] Informatika.stei.itb.ac.id. Available at: <https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2020-2021/Algoritma-Greedy-(2021)-Bag2.pdf> [Accessed 18 February 2022].  
+  Munir, R., 2022. Algoritma Greedy (Bagian 3). [online] Informatika.stei.itb.ac.id. Available at: <https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2021-2022/Algoritma-Greedy-(2022)-Bag3.pdf> [Accessed 18 February 2022].  
 
 
